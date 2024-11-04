@@ -1,6 +1,6 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('/sw.js')
             .then(registration => {
                 console.log('Service Worker registered with scope:', registration.scope);
             })
@@ -9,65 +9,37 @@ if ('serviceWorker' in navigator) {
             });
     });
 }
- 
+
+function GetCityTemp(cityname, id) 
+{
+    var key = "12bc968c7cf2cfd90204032dfbf03cc6";
+
+    fetch("https://api.openweathermap.org/data/2.5/weather?q=" + cityname + "&appid=" + key + "&units=metric")
+    .then(function(resp) {return resp.json()})
+    .then(function(data)
+    {
+        console.log(data);
+        if (data.cod == 200) {
+            document.getElementById(id).textContent = data.name + ": " + data.main.temp + " C"
+        }
+    })
+    .catch(function(error){ console.log("Error: " + error)});
+}
+
+window.onload = function()
+{
+    const city1 = "Jihlava";
+    const city2 = "Větrný Jeníkov";
+    var data2 = GetCityTemp(city1, "jihlava");
+    var data3 = GetCityTemp(city2, "Jenikov");
+};
 
 
-function Work() {
-    let cislo1;
-    let cislo2;
-    var operace;
-    let output;
-    event.preventDefault();
-    document.getElementById("911").hidden = true;
-    try {
 
-         cislo1 = parseFloat(document.getElementById('cislo1').value);
-         var e = document.getElementById('operace');
-         operace = e.value;
-         cislo2 = parseFloat(document.getElementById('cislo2').value);
-    } catch (error) {
-        console.log('Nefunnguje to', error);
-    }
-    if (isNaN(cislo1) || isNaN(cislo2)) {
-        document.getElementById('Vysledek').innerText = "Invalid input";
-        console.log("Invalid input detected");
-        return;
-    }
+function getUserCityTemp() 
+{
+    const input_city = document.getElementById("input_city").value;   
+    var data1 = GetCityTemp(input_city, "city");
     
-    
 
-
-switch (operace) {
-    case "+":
-        output = cislo1 + cislo2;
-        document.getElementById('Vysledek').innerText = output;
-        break;
-    case "-":
-        output = cislo1 - cislo2;
-        document.getElementById('Vysledek').innerText = output;
-        break;
-    case "*":
-        output = cislo1 * cislo2;
-        document.getElementById('Vysledek').innerText = output;
-        break;
-    case "/":
-        if (cislo1 == 9 && cislo2 == 11) {
-            document.getElementById("911").hidden = false;
-            document.getElementById('Vysledek').innerText = "They hit the second tower 💀";
-            return;
-        }
-        if (cislo2 == 0) {
-            document.getElementById('Vysledek').innerText = "Chuj nedel nulou";
-            
-        }
-        else
-        {
-            output = cislo1 / cislo2;
-            document.getElementById('Vysledek').innerText = output;
-        }
-        break;
-    default:
-        document.getElementById('Vysledek').innerText = "Invalid input";
-        break;
-    }
-}  
+}
